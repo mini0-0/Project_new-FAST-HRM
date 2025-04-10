@@ -1,4 +1,4 @@
-package com.project.fasthrm.respotiory;
+package com.project.fasthrm.repository;
 
 import com.project.fasthrm.domain.AcademicCheck;
 import org.springframework.data.jpa.repository.JpaRepository;

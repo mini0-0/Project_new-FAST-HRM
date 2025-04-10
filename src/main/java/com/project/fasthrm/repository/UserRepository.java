@@ -1,4 +1,4 @@
-package com.project.fasthrm.respotiory;
+package com.project.fasthrm.repository;
 
 import com.project.fasthrm.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
