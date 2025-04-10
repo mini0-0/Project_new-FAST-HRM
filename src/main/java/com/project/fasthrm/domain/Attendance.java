@@ -7,13 +7,15 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "attendance", indexes = {
-        @Index(name = "idx_member_date", columnList = "member_id, attendance_datetime")
+        @Index(name = "idx_attendance_member_date", columnList = "member_id, attendance_datetime")
 })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
 public class Attendance extends BaseTime {
+
+    // 회원 출석 정보
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="attendance_id")

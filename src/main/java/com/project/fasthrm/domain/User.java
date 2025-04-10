@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "user", indexes = {
-        @Index(name = "idx_username", columnList = "username"),
-        @Index(name = "idx_place_role", columnList = "place_id, user_role")
+@Table(name = "users", indexes = {
+        @Index(name = "idx_users_username", columnList = "username"),
+        @Index(name = "idx_users_place_role", columnList = "place_id, user_role")
 })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,6 +15,7 @@ import lombok.*;
 @AllArgsConstructor
 public class User extends BaseTime {
 
+    // 사용자
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="user_id")
@@ -30,8 +31,8 @@ public class User extends BaseTime {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "user_nickname", nullable = false, length = 50)
-    private String userNickname;
+    @Column(name = "user_realname", nullable = false, length = 50)
+    private String userRealName;
 
     @Column(name = "user_address")
     private String userAddress;

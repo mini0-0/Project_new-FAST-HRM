@@ -14,6 +14,8 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 public class Test extends BaseTime {
+
+    // 시험 결과
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="test_id")

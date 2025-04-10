@@ -13,6 +13,8 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 public class Takes extends BaseTime {
+
+    // 회원 일정
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="takes_id")

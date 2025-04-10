@@ -9,6 +9,8 @@ build/
 /generated/
 .gradle
 .idea
+/.env
+=======
 build/
 /build/
 # User-specific stuff

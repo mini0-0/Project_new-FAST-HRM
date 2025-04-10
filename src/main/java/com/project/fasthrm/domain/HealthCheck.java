@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class HealthCheck extends BaseTime {
+
+    // 헬스장
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="hc_id")

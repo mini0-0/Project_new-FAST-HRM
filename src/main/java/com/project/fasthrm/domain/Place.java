@@ -12,6 +12,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Place extends BaseTime {
+
+    // 업체
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="place_id")
