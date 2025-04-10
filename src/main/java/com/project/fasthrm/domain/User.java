@@ -31,8 +31,8 @@ public class User extends BaseTime {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "user_nickname", nullable = false, length = 50)
-    private String userNickname;
+    @Column(name = "user_realname", nullable = false, length = 50)
+    private String userRealName;
 
     @Column(name = "user_address")
     private String userAddress;
