@@ -10,6 +10,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class Member extends BaseTime {
+
+    // 회원
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="member_id")

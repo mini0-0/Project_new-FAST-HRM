@@ -15,6 +15,7 @@ import lombok.*;
 @AllArgsConstructor
 public class User extends BaseTime {
 
+    // 사용자
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="user_id")

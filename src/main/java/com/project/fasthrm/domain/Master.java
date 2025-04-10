@@ -10,6 +10,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class Master extends BaseTime {
+
+    // 관리자
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="master_id")

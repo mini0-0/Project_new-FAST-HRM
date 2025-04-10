@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class Edu extends BaseTime {
+
+    // 개설 서비스
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="edu_id")

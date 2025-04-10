@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 public class WorkTime extends BaseTime {
 
+    // 직원 출퇴근 정보
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "worktime_id")

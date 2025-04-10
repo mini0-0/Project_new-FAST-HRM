@@ -10,6 +10,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class Advisor extends BaseTime{
+
+    // 회원담당
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="advisor_id")

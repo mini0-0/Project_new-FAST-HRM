@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class Attendance extends BaseTime {
+
+    // 회원 출석 정보
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="attendance_id")

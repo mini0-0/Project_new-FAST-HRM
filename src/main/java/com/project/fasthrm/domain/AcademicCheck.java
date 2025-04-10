@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class AcademicCheck extends BaseTime {
+
+    // 학원
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="ac_id")

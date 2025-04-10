@@ -11,6 +11,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class Worker extends BaseTime {
+
+    // 직원
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="worker_id")
