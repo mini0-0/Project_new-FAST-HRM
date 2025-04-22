@@ -2,8 +2,10 @@ package com.project.fasthrm.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name="place", indexes = {
         @Index(name="idx_place_name", columnList = "place_name")
 })

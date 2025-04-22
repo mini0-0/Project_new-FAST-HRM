@@ -2,8 +2,10 @@ package com.project.fasthrm.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "master")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

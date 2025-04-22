@@ -3,8 +3,10 @@ package com.project.fasthrm.domain;
 import com.project.fasthrm.domain.type.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "users", indexes = {
         @Index(name = "idx_users_username", columnList = "username"),
         @Index(name = "idx_users_place_role", columnList = "place_id, user_role")
