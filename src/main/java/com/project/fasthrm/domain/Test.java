@@ -2,10 +2,12 @@ package com.project.fasthrm.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "test", indexes = {
         @Index(name = "idx_test_day", columnList = "test_day")
 })

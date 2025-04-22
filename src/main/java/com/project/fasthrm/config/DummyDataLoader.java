@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
-@Profile("dev")
 @RequiredArgsConstructor
 public class DummyDataLoader implements CommandLineRunner {
 
@@ -42,15 +41,19 @@ public class DummyDataLoader implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+        // ✅ 이미 Place 테이블에 데이터가 존재하면 삽입하지 않음
+        if (placeRepository.count() > 0) {
+            System.out.println("⚠️ Dummy data already exists. Skipping insertion.");
+            return;
+        }
+
         Faker faker = new Faker(new Locale("ko"));
         Random random = new Random();
 
         int batchSize = 1000;
-        int totalCount = 10000;
+        int totalCount = 1000000; // ✅ 데이터 100만 건 생성
+        String[] eduDays = {"월수금", "화목", "토일", "월화수", "수목금","월수","매일"};
 
-        String[] eduDays = {"월수금", "화목", "토일", "월화수", "수목금", "매일"};
-
-        // 1. Place 생성
         List<Place> places = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             Place place = Place.builder()
@@ -61,7 +64,6 @@ public class DummyDataLoader implements CommandLineRunner {
             places.add(place);
         }
 
-        // 2. 사용자, 멤버, 워커, 마스터
         List<Member> members = new ArrayList<>();
         List<Worker> workers = new ArrayList<>();
         for (int i = 0; i < totalCount; i++) {
@@ -109,9 +111,8 @@ public class DummyDataLoader implements CommandLineRunner {
             }
         }
 
-        // 3. Edu 생성
         List<Edu> edus = new ArrayList<>();
-        for (int i = 0; i < 5000; i++) {
+        for (int i = 0; i < 50000; i++) {
             Edu edu = Edu.builder()
                     .place(places.get(random.nextInt(places.size())))
                     .worker(workers.get(random.nextInt(workers.size())))
@@ -123,28 +124,30 @@ public class DummyDataLoader implements CommandLineRunner {
                     .build();
             em.persist(edu);
             edus.add(edu);
+
+            if (i % batchSize == 0 && i > 0) {
+                em.flush();
+                em.clear();
+            }
         }
 
-        // 4. Takes, Attendance, HealthCheck, AcademicCheck, Advisor, Test, WorkTime
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100000; i++) {
             Member member = members.get(random.nextInt(members.size()));
             Worker worker = workers.get(random.nextInt(workers.size()));
             Edu edu = edus.get(random.nextInt(edus.size()));
 
-            Takes takes = Takes.builder()
+            em.persist(Takes.builder()
                     .member(member)
                     .edu(edu)
                     .registeredAt(LocalDate.now().minusDays(random.nextInt(365)))
-                    .build();
-            em.persist(takes);
+                    .build());
 
-            Attendance attendance = Attendance.builder()
+            em.persist(Attendance.builder()
                     .member(member)
                     .attendanceDatetime(LocalDateTime.now().minusDays(random.nextInt(100)))
-                    .build();
-            em.persist(attendance);
+                    .build());
 
-            HealthCheck hc = HealthCheck.builder()
+            em.persist(HealthCheck.builder()
                     .member(member)
                     .hcSex(random.nextBoolean() ? "남" : "여")
                     .hcHeight(150f + random.nextFloat() * 40)
@@ -157,42 +160,37 @@ public class DummyDataLoader implements CommandLineRunner {
                     .hcBodyfatmass(BigDecimal.valueOf(15 + random.nextDouble() * 10))
                     .hcSkeletalmusclemass(BigDecimal.valueOf(25 + random.nextDouble() * 5))
                     .hcReport(faker.lorem().sentence())
-                    .build();
-            em.persist(hc);
+                    .build());
 
-            AcademicCheck ac = AcademicCheck.builder()
+            em.persist(AcademicCheck.builder()
                     .member(member)
                     .acGrade(random.nextInt(6))
                     .acClass("" + (char)(random.nextInt(26) + 'A'))
                     .acSchool(faker.university().name())
                     .acParent(faker.name().fullName())
                     .acDate(LocalDateTime.now().minusDays(random.nextInt(300)))
-                    .build();
-            em.persist(ac);
+                    .build());
 
-            Advisor advisor = Advisor.builder()
+            em.persist(Advisor.builder()
                     .member(member)
                     .worker(worker)
-                    .build();
-            em.persist(advisor);
+                    .build());
 
-            Test test = Test.builder()
-                    .takes(takes)
+            em.persist(Test.builder()
+                    .takes(takesRepository.save(Takes.builder().member(member).edu(edu).registeredAt(LocalDate.now()).build()))
                     .testDay(LocalDate.now().minusDays(random.nextInt(60)))
                     .testResult(faker.letterify("?"))
                     .testName(faker.educator().course())
-                    .build();
-            em.persist(test);
+                    .build());
 
-            WorkTime wt = WorkTime.builder()
+            em.persist(WorkTime.builder()
                     .worker(worker)
                     .worktimeDay(LocalDate.now().minusDays(random.nextInt(60)))
                     .type(random.nextBoolean() ? "정상" : "지각")
                     .time("0" + (8 + random.nextInt(2)) + ":00~18:00")
                     .start(LocalDateTime.now().minusHours(8))
                     .end(LocalDateTime.now())
-                    .build();
-            em.persist(wt);
+                    .build());
 
             if (i % batchSize == 0 && i > 0) {
                 em.flush();
@@ -202,6 +200,6 @@ public class DummyDataLoader implements CommandLineRunner {
 
         em.flush();
         em.clear();
-        System.out.println("✅ Dummy data insertion complete.");
+        System.out.println("✅ 100만건 Dummy 데이터 삽입 완료 (중복 없음)");
     }
 }
