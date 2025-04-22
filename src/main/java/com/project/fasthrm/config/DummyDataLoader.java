@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
-@Profile("dev")
 @RequiredArgsConstructor
 public class DummyDataLoader implements CommandLineRunner {
 
