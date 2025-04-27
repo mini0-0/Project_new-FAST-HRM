@@ -35,27 +35,30 @@ class MasterMainApiTest {
     void shouldReturnDashboardData() throws Exception {
         // Given
         Long placeId = 1L;
+
+        // 각 DTO를 new 생성자 기반으로 생성
+        EduRevenueDto eduRevenueDto = new EduRevenueDto(
+                1L,              // eduId
+                "Java 기초",      // eduName
+                50000L,          // unitPrice
+                10L              // studentCount
+                // revenue는 unitPrice * studentCount로 자동 계산됨
+        );
+
+        MonthlyEduRevenueDto monthlyEduRevenueDto = new MonthlyEduRevenueDto(
+                "1월",
+                500000L
+        );
+
+        MonthlyRegistrationDto monthlyRegistrationDto = new MonthlyRegistrationDto(
+                "1월",
+                10L
+        );
+
         MasterMainDto mockDto = MasterMainDto.builder()
-                .eduRevenueList(List.of(
-                        EduRevenueDto.builder()
-                                .eduName("Java 기초")
-                                .studentCount(10L)
-                                .unitPrice(50000L)
-                                .revenue(500000L)
-                                .build()
-                ))
-                .monthlyEduRevenueList(List.of(
-                        MonthlyEduRevenueDto.builder()
-                                .month("1월")
-                                .totalRevenue(500000L)
-                                .build()
-                ))
-                .monthlyRegistrationList(List.of(
-                        MonthlyRegistrationDto.builder()
-                                .month("1월")
-                                .totalRegistrations(10L)
-                                .build()
-                ))
+                .eduRevenueList(List.of(eduRevenueDto))
+                .monthlyEduRevenueList(List.of(monthlyEduRevenueDto))
+                .monthlyRegistrationList(List.of(monthlyRegistrationDto))
                 .build();
 
         given(masterMainService.getMasterMainDashboard(placeId)).willReturn(mockDto);

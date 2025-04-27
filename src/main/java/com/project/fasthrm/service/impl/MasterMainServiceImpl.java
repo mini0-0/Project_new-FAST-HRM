@@ -2,7 +2,7 @@ package com.project.fasthrm.service.impl;
 
 import com.project.fasthrm.dto.response.MasterMainDto;
 
-import com.project.fasthrm.repository.MasterMainQueryRepository;
+import com.project.fasthrm.repository.query.MasterMainQueryRepository;
 import com.project.fasthrm.service.MasterMainService;
 
 import lombok.RequiredArgsConstructor;

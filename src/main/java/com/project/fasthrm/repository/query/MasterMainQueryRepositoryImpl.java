@@ -1,4 +1,4 @@
-package com.project.fasthrm.repository;
+package com.project.fasthrm.repository.query;
 
 import com.project.fasthrm.domain.QEdu;
 import com.project.fasthrm.domain.QMember;

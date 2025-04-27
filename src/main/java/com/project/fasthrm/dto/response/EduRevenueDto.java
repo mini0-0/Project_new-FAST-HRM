@@ -1,15 +1,13 @@
 package com.project.fasthrm.dto.response;
 
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 
-@Data
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
-@Builder
-@EqualsAndHashCode
 public class EduRevenueDto {
     // 교육별 수익
     private Long eduId;
@@ -19,6 +17,7 @@ public class EduRevenueDto {
     private Long revenue;         // 총 수익 (계산값)
 
 
+    @QueryProjection
     public EduRevenueDto(Long eduId, String eduName, Long unitPrice, Long studentCount) {
         this.eduId = eduId;
         this.eduName = eduName;
