@@ -1,4 +1,4 @@
-package com.project.fasthrm.repository;
+package com.project.fasthrm.repository.query;
 
 import com.project.fasthrm.dto.response.EduRevenueDto;
 import com.project.fasthrm.dto.response.MonthlyEduRevenueDto;
