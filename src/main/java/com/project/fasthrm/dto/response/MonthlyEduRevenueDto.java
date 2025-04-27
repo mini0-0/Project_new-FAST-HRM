@@ -1,17 +1,20 @@
 package com.project.fasthrm.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.querydsl.core.annotations.QueryProjection;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
-@Builder
 public class MonthlyEduRevenueDto {
     // 월별 수익
     private String month;
     private Long totalRevenue;   // 월별 총 수익
+
+
+    @QueryProjection
+    public MonthlyEduRevenueDto(String month, Long totalRevenue) {
+        this.month = month;
+        this.totalRevenue = totalRevenue;
+    }
 
 }
