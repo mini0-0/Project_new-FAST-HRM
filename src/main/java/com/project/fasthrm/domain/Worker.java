@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -23,6 +26,9 @@ public class Worker extends BaseTime {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkTime> workTimes = new ArrayList<>();
 
     @Column(name = "worker_salary")
     private Integer workerSalary;
