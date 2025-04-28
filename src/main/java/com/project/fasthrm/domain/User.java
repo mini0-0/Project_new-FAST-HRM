@@ -27,6 +27,9 @@ public class User extends BaseTime {
     @JoinColumn(name = "place_id", nullable = false)
     private Place place;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Worker worker;
+
     @Column(name = "username", nullable = false, length = 50)
     private String username;
 

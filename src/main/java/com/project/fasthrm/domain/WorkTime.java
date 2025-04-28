@@ -28,18 +28,18 @@ public class WorkTime extends BaseTime {
     @JoinColumn(name = "worker_id", nullable = false)
     private Worker worker;
 
-    @Column(name = "worktime_day")
+    @Column(name = "worktime_day") // 근무 날짜
     private LocalDate worktimeDay;
 
-    @Column(name = "worktime_type")
+    @Column(name = "worktime_type") // 출근/퇴근/지각/결근/휴가
     private String type;
 
-    @Column(name = "worktime_time")
+    @Column(name = "worktime_time") // 약속한 업무시간
     private String time;
 
-    @Column(name = "worktime_start")
+    @Column(name = "worktime_start") // 출근 시간
     private LocalDateTime start;
 
-    @Column(name = "worktime_end")
+    @Column(name = "worktime_end")  // 퇴근시간
     private LocalDateTime end;
 }
