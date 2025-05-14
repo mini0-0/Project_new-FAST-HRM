@@ -41,7 +41,7 @@ public class WorkerManageApiTest {
         Mockito.when(workerManageService.findWorkerByPlaceId(1L)).thenReturn(mockWorkers);
 
         // When & Then
-        mvc.perform(get("/api/worker/manage")
+        mvc.perform(get("/api/workers/manage")
                         .param("placeId", "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
@@ -52,6 +52,7 @@ public class WorkerManageApiTest {
     @Test
     @DisplayName("WorkerManage - worker 정보 수정")
     void givenWorkerManageDto_whenUpdatingWorker_thenReturnsOk() throws Exception {
+        // Given
         WorkerManageDto dto = WorkerManageDto.builder()
                 .userId(1L)
                 .placeId(1L)
@@ -60,7 +61,8 @@ public class WorkerManageApiTest {
                 // 나머지 필요한 값들 builder로 채우기
                 .build();
 
-        mvc.perform(put("/api/worker/manage")
+        // When & Then
+        mvc.perform(put("/api/workers/manage")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(dto))) // 여기서도 builder 객체를 직렬화
                 .andExpect(status().isOk());
@@ -73,7 +75,7 @@ public class WorkerManageApiTest {
         Long userId = 1L;
 
         // When & Then
-        mvc.perform(delete("/api/worker/manage")
+        mvc.perform(delete("/api/workers/manage")
                 .param("userId", userId.toString()))
                 .andExpect(status().isOk());
 
