@@ -1,12 +1,12 @@
 package com.project.fasthrm.domain;
 
+import com.project.fasthrm.dto.response.EduDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -48,5 +48,13 @@ public class Edu extends BaseTime {
 
     @Column(name = "edu_tuition", precision = 10, scale = 2)
     private BigDecimal eduTuition;
+
+    public void updateFromDto(EduDto dto) {
+        this.eduName = dto.getEduName();
+        this.eduDay = dto.getEduDay();
+        this.eduStart = dto.getEduStart();
+        this.eduEnd = dto.getEduEnd();
+        this.eduTuition = dto.getEduTuition();
+    }
 
 }
