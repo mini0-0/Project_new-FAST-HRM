@@ -33,4 +33,7 @@ public class Worker extends BaseTime {
     @Column(name = "worker_salary")
     private Integer workerSalary;
 
+    @Column(name = "approved_for_tuition_update", nullable = false)
+    private boolean approvedForTuitionUpdate = false;
+
 }
