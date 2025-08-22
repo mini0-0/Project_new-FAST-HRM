@@ -1,5 +1,6 @@
 package com.project.fasthrm.domain;
 
+import com.project.fasthrm.domain.type.AttendanceStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,6 +19,10 @@ import java.time.LocalDateTime;
 public class Attendance extends BaseTime {
 
     // 회원 출석 정보
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "edu_id")
+    private Edu edu;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="attendance_id")
@@ -30,4 +35,7 @@ public class Attendance extends BaseTime {
     @Column(name = "attendance_datetime", nullable = false)
     private LocalDateTime attendanceDatetime;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "is_attended")
+    private AttendanceStatus isAttended;
 }
