@@ -17,8 +17,10 @@ import java.util.List;
 public class EduQueryRepositoryImpl implements EduQueryRepository {
 
     private final JPAQueryFactory queryFactory;
-    private final QEdu edu = QEdu.edu;
-    private final QWorker worker = QWorker.worker;
+
+    private final QEdu edu = new QEdu("edu");
+    private final QWorker worker = new QWorker("worker");
+
 
     @Override
     public List<EduDto> findEduByPlaceId(Long placeId) {
@@ -29,7 +31,8 @@ public class EduQueryRepositoryImpl implements EduQueryRepository {
                         edu.eduStart,
                         edu.eduEnd,
                         edu.eduTuition,
-                        edu.worker.approvedForTuitionUpdate
+                        edu.worker.approvedForTuitionUpdate,
+                        edu.eduRoomName
                 ))
                 .from(edu)
                 .where(edu.place.id.eq(placeId))
@@ -45,7 +48,8 @@ public class EduQueryRepositoryImpl implements EduQueryRepository {
                         edu.eduStart,
                         edu.eduEnd,
                         edu.eduTuition,
-                        edu.worker.approvedForTuitionUpdate
+                        edu.worker.approvedForTuitionUpdate,
+                        edu.eduRoomName
                 ))
                 .from(edu)
                 .where(edu.worker.id.eq(workerId))
@@ -72,7 +76,8 @@ public class EduQueryRepositoryImpl implements EduQueryRepository {
                         edu.eduStart,
                         edu.eduEnd,
                         edu.eduTuition,
-                        edu.worker.approvedForTuitionUpdate
+                        edu.worker.approvedForTuitionUpdate,
+                        edu.eduRoomName
                 ))
                 .from(edu)
                 .where(edu.place.id.eq(placeId)

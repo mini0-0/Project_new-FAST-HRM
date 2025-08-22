@@ -22,31 +22,32 @@ public class MasterMainQueryRepositoryImpl implements MasterMainQueryRepository{
 
     private final JPAQueryFactory queryFactory;
 
+    private final QEdu edu = new QEdu("edu");
+    private final QMember member = new QMember("member");
+    private final QTakes takes = new QTakes("takes");
+    private final QUser user = new QUser("user");
+
+
     // 교육별 총 누적수익
     @Override
     public List<EduRevenueDto> getEduRevenue(Long placeId) {
-        QTakes t = QTakes.takes;
-        QEdu e = QEdu.edu;
-        QMember m = QMember.member;
-        QUser u = QUser.user;
-
 
         return queryFactory
                 .select(Projections.constructor(
                         EduRevenueDto.class,
-                        e.id,
-                        e.eduName,
-                        e.eduTuition,
-                        t.count()
+                        edu.id,
+                        edu.eduName,
+                        edu.eduTuition,
+                        takes.count()
                 ))
-                .from(t)
-                .join(t.member.user, u)
-                .join(t.edu, e)
+                .from(takes)
+                .join(takes.member.user, user)
+                .join(takes.edu, edu)
                 .where(
-                        u.place.id.eq(placeId),
-                        u.userRole.eq(UserRole.MEMBER)
+                        user.place.id.eq(placeId),
+                        user.userRole.eq(UserRole.MEMBER)
                 )
-                .groupBy(e.id, e.eduName, e.eduTuition)
+                .groupBy(edu.id, edu.eduName, edu.eduTuition)
                 .fetch();
 
 
@@ -55,41 +56,36 @@ public class MasterMainQueryRepositoryImpl implements MasterMainQueryRepository{
     // 월별 총수익
     @Override
     public List<MonthlyEduRevenueDto> getMonthlyEduRevenue(Long placeId) {
-        QTakes t = QTakes.takes;
-        QEdu e = QEdu.edu;
-        QUser u = QUser.user;
 
         return queryFactory
                 .select(Projections.constructor(
                         MonthlyEduRevenueDto.class,
-                        Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM')", t.registeredAt),
-                        Expressions.stringTemplate("SUM({0})", e.eduTuition)
+                        Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM')", takes.registeredAt),
+                        Expressions.stringTemplate("SUM({0})", edu.eduTuition)
                                 .castToNum(Long.class)
                 ))
-                .from(t)
-                .join(t.edu, e)
-                .join(t.member.user, u)
-                .where(u.place.id.eq(placeId), u.userRole.eq(UserRole.MEMBER))
-                .groupBy(Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM')", t.registeredAt))
+                .from(takes)
+                .join(takes.edu, edu)
+                .join(takes.member.user, user)
+                .where(user.place.id.eq(placeId), user.userRole.eq(UserRole.MEMBER))
+                .groupBy(Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM')", takes.registeredAt))
                 .fetch();
     }
 
     // 월별 등록자 수
     @Override
     public List<MonthlyRegistrationDto> getMonthlyRegistration(Long placeId) {
-        QTakes t = QTakes.takes;
-        QUser u = QUser.user;
 
         return queryFactory
                 .select(Projections.constructor(
                         MonthlyRegistrationDto.class,
-                        Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM')", t.registeredAt),
-                        t.count()
+                        Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM')", takes.registeredAt),
+                        takes.count()
                 ))
-                .from(t)
-                .join(t.member.user, u)
-                .where(u.place.id.eq(placeId), u.userRole.eq(UserRole.MEMBER))
-                .groupBy(Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM')", t.registeredAt))
+                .from(takes)
+                .join(takes.member.user, user)
+                .where(user.place.id.eq(placeId), user.userRole.eq(UserRole.MEMBER))
+                .groupBy(Expressions.stringTemplate("TO_CHAR({0}, 'YYYY-MM')", takes.registeredAt))
                 .fetch();
 
     }

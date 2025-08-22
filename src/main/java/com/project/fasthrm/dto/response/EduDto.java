@@ -23,15 +23,17 @@ public class EduDto {
     private LocalDateTime eduEnd;
     private BigDecimal eduTuition;
     private boolean approvedForTuitionUpdate;
+    private String eduRoomName;
 
     @QueryProjection
-    public EduDto(String eduName, String eduDay, LocalDateTime eduStart, LocalDateTime eduEnd, BigDecimal eduTuition, boolean approvedForTuitionUpdate) {
+    public EduDto(String eduName, String eduDay, LocalDateTime eduStart, LocalDateTime eduEnd, BigDecimal eduTuition, boolean approvedForTuitionUpdate, String eduRoomName) {
         this.eduName = eduName;
         this.eduDay = eduDay;
         this.eduStart = eduStart;
         this.eduEnd = eduEnd;
         this.eduTuition = eduTuition;
         this.approvedForTuitionUpdate = approvedForTuitionUpdate;
+        this.eduRoomName = eduRoomName;
     }
 
     public Edu toEntity() {
@@ -41,6 +43,7 @@ public class EduDto {
                 .eduStart(this.eduStart)
                 .eduEnd(this.eduEnd)
                 .eduTuition(this.eduTuition)
+                .eduRoomName(this.eduRoomName)
                 .build();
     }
 
@@ -52,6 +55,7 @@ public class EduDto {
                 .eduStart(edu.getEduStart())
                 .eduEnd(edu.getEduEnd())
                 .eduTuition(edu.getEduTuition())
+                .eduRoomName(edu.getEduRoomName())
                 .approvedForTuitionUpdate(
                 edu.getWorker() != null && Boolean.TRUE.equals(edu.getWorker().isApprovedForTuitionUpdate())
         )

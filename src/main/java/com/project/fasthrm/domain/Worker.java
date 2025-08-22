@@ -27,12 +27,16 @@ public class Worker extends BaseTime {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkTime> workTimes = new ArrayList<>();
 
+    // 직원 월급
     @Column(name = "worker_salary")
     private Integer workerSalary;
 
+    // 수업료 수정 승인 여부
+    @Builder.Default
     @Column(name = "approved_for_tuition_update", nullable = false)
     private boolean approvedForTuitionUpdate = false;
 

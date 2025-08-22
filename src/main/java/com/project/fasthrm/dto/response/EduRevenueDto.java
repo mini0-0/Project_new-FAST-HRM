@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
@@ -34,4 +35,27 @@ public class EduRevenueDto {
         this.revenue = this.unitPrice * studentCount;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EduRevenueDto that = (EduRevenueDto) o;
+        return Objects.equals(eduId, that.eduId) && Objects.equals(eduName, that.eduName) && Objects.equals(studentCount, that.studentCount) && Objects.equals(unitPrice, that.unitPrice) && Objects.equals(revenue, that.revenue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eduId, eduName, studentCount, unitPrice, revenue);
+    }
+
+    @Override
+    public String toString() {
+        return "EduRevenueDto{" +
+                "eduId=" + eduId +
+                ", eduName='" + eduName + '\'' +
+                ", studentCount=" + studentCount +
+                ", unitPrice=" + unitPrice +
+                ", revenue=" + revenue +
+                '}';
+    }
 }

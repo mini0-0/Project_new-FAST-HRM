@@ -7,6 +7,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -49,12 +51,22 @@ public class Edu extends BaseTime {
     @Column(name = "edu_tuition", precision = 10, scale = 2)
     private BigDecimal eduTuition;
 
+    @Column(name = "edu_room_name")
+    private String eduRoomName;
+
+
+    @OneToMany(mappedBy = "edu", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Takes> takesList = new ArrayList<>();
+
+
     public void updateFromDto(EduDto dto) {
         this.eduName = dto.getEduName();
         this.eduDay = dto.getEduDay();
         this.eduStart = dto.getEduStart();
         this.eduEnd = dto.getEduEnd();
         this.eduTuition = dto.getEduTuition();
+        this.eduRoomName = dto.getEduRoomName();
     }
 
 }
