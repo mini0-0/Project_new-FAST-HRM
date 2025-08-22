@@ -17,6 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Takes extends BaseTime {
 
+    // edu를 듣는 회원을 확인하기 위해서 사용
     // 회원 일정
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
