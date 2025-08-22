@@ -1,6 +1,7 @@
 package com.project.fasthrm.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.fasthrm.domain.type.AttendanceStatus;
 import com.project.fasthrm.dto.response.WorkerManageDto;
 import com.project.fasthrm.service.WorkerManageService;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class WorkerManageApiTest {
 
     @Autowired private MockMvc mvc;
+
+    @Autowired private ObjectMapper objectMapper;
 
     @MockitoBean private WorkerManageService workerManageService;
 
@@ -58,13 +61,12 @@ public class WorkerManageApiTest {
                 .placeId(1L)
                 .username("worker1")
                 .userRealName("Worker One")
-                // 나머지 필요한 값들 builder로 채우기
                 .build();
 
         // When & Then
         mvc.perform(put("/api/workers/manage")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(dto))) // 여기서도 builder 객체를 직렬화
+                        .content(asJsonString(dto)))
                 .andExpect(status().isOk());
     }
 
@@ -87,40 +89,28 @@ public class WorkerManageApiTest {
                 .userId(1L)
                 .placeId(1L)
                 .username("worker1")
-                .password("password")
                 .userRealName("Worker One")
-                .userAddress("서울시")
-                .userPhoneNumber("01012345678")
                 .workerSalary(3000000)
-                .scheduledWorkTime("09:00")
-                .workStartTime(LocalDateTime.now())
-                .workEndTime(LocalDateTime.now().plusHours(9))
-                .todayAttendance(true)
-                .isLate(false)
+                .scheduledWorkTime("09:00-18:00")
+                .workStartTime(LocalDateTime.parse("2025-08-21T09:00:00"))
+                .workEndTime(LocalDateTime.parse("2025-08-21T18:00:00"))
+                .todayAttendance(AttendanceStatus.PRESENT)
                 .usedVacation(false)
-                .monthlyWorkHours(160)
-                .weeklyWorkHours(40)
                 .build();
     }
 
     private WorkerManageDto createWorkerManageDto1Updated() {
         return WorkerManageDto.builder()
-                .userId(1L)
+                .userId(2L)
                 .placeId(1L)
-                .username("worker1")
-                .password("newpassword")
-                .userRealName("Worker One Updated")
-                .userAddress("서울 강남구")
-                .userPhoneNumber("01099998888")
-                .workerSalary(3500000)
-                .scheduledWorkTime("09:30")
-                .workStartTime(LocalDateTime.now())
-                .workEndTime(LocalDateTime.now().plusHours(8))
-                .todayAttendance(true)
-                .isLate(true)
+                .username("worker2")
+                .userRealName("Worker Two")
+                .workerSalary(3100000)
+                .scheduledWorkTime("10:00-19:00")
+                .workStartTime(LocalDateTime.parse("2025-08-21T10:05:00"))
+                .workEndTime(LocalDateTime.parse("2025-08-21T19:00:00"))
+                .todayAttendance(AttendanceStatus.LATE)
                 .usedVacation(false)
-                .monthlyWorkHours(180)
-                .weeklyWorkHours(45)
                 .build();
     }
 
@@ -134,11 +124,10 @@ public class WorkerManageApiTest {
                 .userAddress("경기도")
                 .userPhoneNumber("01078941234")
                 .workerSalary(4000000)
-                .scheduledWorkTime("10:00")
-                .workStartTime(LocalDateTime.now())
-                .workEndTime(LocalDateTime.now().plusHours(8))
-                .todayAttendance(true)
-                .isLate(false)
+                .scheduledWorkTime("10:00-19:00")
+                .workStartTime(LocalDateTime.parse("2025-08-21T10:00:00"))
+                .workEndTime(LocalDateTime.parse("2025-08-21T19:00:00"))
+                .todayAttendance(AttendanceStatus.PRESENT)
                 .usedVacation(false)
                 .monthlyWorkHours(140)
                 .weeklyWorkHours(35)
