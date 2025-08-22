@@ -1,5 +1,6 @@
 package com.project.fasthrm.domain;
 
+import com.project.fasthrm.domain.type.AttendanceStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -31,8 +32,9 @@ public class WorkTime extends BaseTime {
     @Column(name = "worktime_day") // 근무 날짜
     private LocalDate worktimeDay;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "worktime_type") // 출근/퇴근/지각/결근/휴가
-    private String type;
+    private AttendanceStatus type;
 
     @Column(name = "worktime_time") // 약속한 업무시간
     private String time;
