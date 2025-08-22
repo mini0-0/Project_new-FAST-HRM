@@ -1,5 +1,6 @@
 package com.project.fasthrm.config;
 
+import com.project.fasthrm.domain.type.AttendanceStatus;
 import net.datafaker.Faker;
 import com.project.fasthrm.domain.*;
 import com.project.fasthrm.domain.type.UserRole;
@@ -9,7 +10,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -41,7 +41,7 @@ public class DummyDataLoader implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        // ✅ 이미 Place 테이블에 데이터가 존재하면 삽입하지 않음
+        // 이미 데이터 있으면 종료
         if (placeRepository.count() > 0) {
             System.out.println("⚠️ Dummy data already exists. Skipping insertion.");
             return;
@@ -51,9 +51,10 @@ public class DummyDataLoader implements CommandLineRunner {
         Random random = new Random();
 
         int batchSize = 1000;
-        int totalCount = 1000000; // ✅ 데이터 100만 건 생성
-        String[] eduDays = {"월수금", "화목", "토일", "월화수", "수목금","월수","매일"};
+        int totalCount = 1000000; // 100만건
+        String[] eduDays = {"월수금", "화목", "토일", "월화수", "수목금", "월수", "매일"};
 
+        // ===== Place 생성 =====
         List<Place> places = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             Place place = Place.builder()
@@ -64,6 +65,7 @@ public class DummyDataLoader implements CommandLineRunner {
             places.add(place);
         }
 
+        // ===== User(Member/Worker/Master) 생성 =====
         List<Member> members = new ArrayList<>();
         List<Worker> workers = new ArrayList<>();
         for (int i = 0; i < totalCount; i++) {
@@ -93,6 +95,7 @@ public class DummyDataLoader implements CommandLineRunner {
                     Worker worker = Worker.builder()
                             .user(user)
                             .workerSalary(random.nextInt(3000000) + 2000000)
+                            .approvedForTuitionUpdate(false)
                             .build();
                     em.persist(worker);
                     workers.add(worker);
@@ -111,6 +114,7 @@ public class DummyDataLoader implements CommandLineRunner {
             }
         }
 
+        // ===== Edu 생성 =====
         List<Edu> edus = new ArrayList<>();
         for (int i = 0; i < 50000; i++) {
             Edu edu = Edu.builder()
@@ -121,6 +125,7 @@ public class DummyDataLoader implements CommandLineRunner {
                     .eduStart(LocalDateTime.now().minusWeeks(random.nextInt(52)))
                     .eduEnd(LocalDateTime.now())
                     .eduTuition(BigDecimal.valueOf(random.nextInt(400000) + 100000))
+                    .eduRoomName((100 + random.nextInt(900)) + "호")
                     .build();
             em.persist(edu);
             edus.add(edu);
@@ -131,62 +136,38 @@ public class DummyDataLoader implements CommandLineRunner {
             }
         }
 
+        // ===== Takes / Attendance / 기타 데이터 생성 =====
         for (int i = 0; i < 100000; i++) {
             Member member = members.get(random.nextInt(members.size()));
             Worker worker = workers.get(random.nextInt(workers.size()));
             Edu edu = edus.get(random.nextInt(edus.size()));
 
+            // 수강 등록
             em.persist(Takes.builder()
                     .member(member)
                     .edu(edu)
                     .registeredAt(LocalDate.now().minusDays(random.nextInt(365)))
                     .build());
 
-            em.persist(Attendance.builder()
-                    .member(member)
-                    .attendanceDatetime(LocalDateTime.now().minusDays(random.nextInt(100)))
-                    .build());
+            // 회원 Attendance 생성
+            if (random.nextDouble() < 0.7) {
+                AttendanceStatus status = getRandomAttendanceStatus(random);
+                LocalDate randomDate = LocalDate.now().minusDays(random.nextInt(100));
 
-            em.persist(HealthCheck.builder()
-                    .member(member)
-                    .hcSex(random.nextBoolean() ? "남" : "여")
-                    .hcHeight(150f + random.nextFloat() * 40)
-                    .hcWeight(45f + random.nextFloat() * 40)
-                    .hcDate(LocalDateTime.now().minusDays(random.nextInt(300)))
-                    .hcPurpose(faker.lorem().word())
-                    .hcTotalbodywater(BigDecimal.valueOf(50 + random.nextDouble() * 10))
-                    .hcProtein(BigDecimal.valueOf(10 + random.nextDouble() * 5))
-                    .hcMinerals(BigDecimal.valueOf(3 + random.nextDouble() * 2))
-                    .hcBodyfatmass(BigDecimal.valueOf(15 + random.nextDouble() * 10))
-                    .hcSkeletalmusclemass(BigDecimal.valueOf(25 + random.nextDouble() * 5))
-                    .hcReport(faker.lorem().sentence())
-                    .build());
+                em.persist(Attendance.builder()
+                        .member(member)
+                        .edu(edu)
+                        .attendanceDatetime(randomDate.atTime(9, 0))
+                        .isAttended(status)
+                        .build());
+            }
 
-            em.persist(AcademicCheck.builder()
-                    .member(member)
-                    .acGrade(random.nextInt(6))
-                    .acClass("" + (char)(random.nextInt(26) + 'A'))
-                    .acSchool(faker.university().name())
-                    .acParent(faker.name().fullName())
-                    .acDate(LocalDateTime.now().minusDays(random.nextInt(300)))
-                    .build());
-
-            em.persist(Advisor.builder()
-                    .member(member)
-                    .worker(worker)
-                    .build());
-
-            em.persist(Test.builder()
-                    .takes(takesRepository.save(Takes.builder().member(member).edu(edu).registeredAt(LocalDate.now()).build()))
-                    .testDay(LocalDate.now().minusDays(random.nextInt(60)))
-                    .testResult(faker.letterify("?"))
-                    .testName(faker.educator().course())
-                    .build());
-
+            // 직원 WorkTime 생성
+            AttendanceStatus workStatus = getRandomAttendanceStatus(random);
             em.persist(WorkTime.builder()
                     .worker(worker)
                     .worktimeDay(LocalDate.now().minusDays(random.nextInt(60)))
-                    .type(random.nextBoolean() ? "정상" : "지각")
+                    .type(workStatus) // Enum을 String으로 저장
                     .time("0" + (8 + random.nextInt(2)) + ":00~18:00")
                     .start(LocalDateTime.now().minusHours(8))
                     .end(LocalDateTime.now())
@@ -201,5 +182,16 @@ public class DummyDataLoader implements CommandLineRunner {
         em.flush();
         em.clear();
         System.out.println("✅ 100만건 Dummy 데이터 삽입 완료 (중복 없음)");
+    }
+
+    private AttendanceStatus getRandomAttendanceStatus(Random random) {
+        double rand = random.nextDouble();
+        if (rand < 0.6) {
+            return AttendanceStatus.PRESENT;
+        } else if (rand < 0.8) {
+            return AttendanceStatus.LATE;
+        } else {
+            return AttendanceStatus.ABSENT;
+        }
     }
 }
